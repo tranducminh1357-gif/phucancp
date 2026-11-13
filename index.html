@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Quản Trị & Đối Soát Bán Lẻ - Phúc An Retail</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 3px solid #2563EB; color: #2563EB; font-weight: 600; }
+    .badge-p1 { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+    .badge-p2 { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .badge-p3 { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-md text-xl font-bold">
+          <i class="fa-solid fa-store"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 leading-tight">Phúc An Retail - AI Agent System</h1>
+          <p class="text-xs text-slate-500">Hệ thống Tự động hóa Đối soát Quản trị & Điều hành 18 Cửa Hàng (BPMN 3 Giai Đoạn)</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+          <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Vercel Ready (Pure HTML/JS)
+        </span>
+        <button onclick="resetData()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-300 font-medium transition flex items-center">
+          <i class="fa-solid fa-arrows-rotate mr-1"></i> Làm mới dữ liệu
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 flex space-x-8 border-t border-slate-100 overflow-x-auto text-sm">
+      <button onclick="switchTab('bpmn')" id="btn-tab-bpmn" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium flex items-center space-x-2 tab-active">
+        <i class="fa-solid fa-diagram-project"></i> <span>1. Sơ đồ Quy trình BPMN</span>
+      </button>
+      <button onclick="switchTab('phase1')" id="btn-tab-phase1" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium flex items-center space-x-2">
+        <i class="fa-solid fa-broom"></i> <span>2. GĐ 1: Chuẩn bị & Làm sạch</span>
+      </button>
+      <button onclick="switchTab('phase2')" id="btn-tab-phase2" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium flex items-center space-x-2">
+        <i class="fa-solid fa-chart-pie"></i> <span>3. GĐ 2: Báo cáo Quản trị</span>
+      </button>
+      <button onclick="switchTab('phase3')" id="btn-tab-phase3" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium flex items-center space-x-2">
+        <i class="fa-solid fa-bullseye"></i> <span>4. GĐ 3: Đối chiếu & Ra Quyết định</span>
+      </button>
+      <button onclick="switchTab('stores')" id="btn-tab-stores" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium flex items-center space-x-2">
+        <i class="fa-solid fa-shop"></i> <span>5. Chi tiết 18 Cửa Hàng</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+    <!-- TAB 1: SƠ ĐỒ BPMN -->
+    <section id="tab-bpmn" class="space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center">
+          <i class="fa-solid fa-sitemap mr-2 text-blue-600"></i> Quy trình Vận hành BPMN 3 Giai đoạn (Phúc An Retail)
+        </h2>
+        <p class="text-sm text-slate-600 mb-6">
+          Quy trình giải quyết triệt để vấn đề nhân viên ghép tệp thủ công: đếm trùng giao dịch, cộng đơn hủy, xử lý hàng trả sai lệch và so sánh khác khoảng thời gian.
+        </p>
+
+        <!-- Diagram Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Col 1 -->
+          <div class="bg-blue-50/70 border-2 border-blue-200 rounded-xl p-5 relative">
+            <span class="absolute -top-3 left-4 bg-blue-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">GIAI ĐOẠN 1</span>
+            <h3 class="font-bold text-blue-900 text-base mt-1 mb-2">Chuẩn bị & Làm sạch</h3>
+            <div class="text-xs space-y-2 text-slate-700">
+              <p><strong>1. Nhân viên kinh doanh:</strong> Nạp Sheets thô (60.000 dòng gồm đơn, giá vốn, KPI).</p>
+              <p><strong>2. AI Agent:</strong> Lọc trùng mã giao dịch, bóc tách đơn hủy, chuẩn hóa hàng trả về âm, đồng bộ chuẩn 2 kỳ.</p>
+              <div class="bg-amber-100 border border-amber-300 text-amber-900 p-2 rounded mt-2">
+                <strong><i class="fa-solid fa-user-check"></i> Human Verification:</strong> Con người kiểm tra lại tính đúng đắn trước khi bàn giao Sheets sạch.
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2 -->
+          <div class="bg-emerald-50/70 border-2 border-emerald-200 rounded-xl p-5 relative">
+            <span class="absolute -top-3 left-4 bg-emerald-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">GIAI ĐOẠN 2</span>
+            <h3 class="font-bold text-emerald-900 text-base mt-1 mb-2">Tạo Báo cáo Quản trị</h3>
+            <div class="text-xs space-y-2 text-slate-700">
+              <p><strong>1. Nhận Sheets sạch:</strong> AI Agent nạp dữ liệu đã qua xác thực.</p>
+              <p><strong>2. Tính toán tài chính bán lẻ:</strong></p>
+              <ul class="list-disc ml-4 space-y-1">
+                <li>Doanh thu thuần (đã trừ trả hàng)</li>
+                <li>Giá vốn (COGS) & Lợi nhuận gộp</li>
+                <li>Tỷ lệ hoàn thành mục tiêu KPI (%)</li>
+                <li>Tăng trưởng MoM cùng kỳ tháng 10 vs tháng 9</li>
+                <li>Cơ cấu doanh thu & tỷ suất lãi từng ngành hàng</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Col 3 -->
+          <div class="bg-rose-50/70 border-2 border-rose-200 rounded-xl p-5 relative">
+            <span class="absolute -top-3 left-4 bg-rose-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">GIAI ĐOẠN 3</span>
+            <h3 class="font-bold text-rose-900 text-base mt-1 mb-2">Đối chiếu & Ra Quyết định</h3>
+            <div class="text-xs space-y-2 text-slate-700">
+              <p><strong>1. Cross-check Audit:</strong> AI đối chiếu chéo, phát hiện tăng trưởng ảo (doanh thu tăng nhưng lợi nhuận sụt giảm).</p>
+              <p><strong>2. Cảnh báo đổi trả cao:</strong> Phát hiện cửa hàng có tỷ lệ trả vượt ngưỡng (>8%).</p>
+              <p><strong>3. Hỗ trợ Giám đốc Kinh doanh:</strong> Xếp hạng thứ tự ưu tiên cửa hàng cần hỗ trợ khẩn cấp kèm khuyến nghị hành động.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button onclick="switchTab('phase1')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition flex items-center shadow">
+            Bắt đầu Giai đoạn 1: Làm sạch dữ liệu <i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Raw Sample Preview -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Mẫu Dữ liệu Thô nạp từ Hệ thống (Raw Sample)</h3>
+        <div class="overflow-x-auto text-xs">
+          <table class="w-full text-left border-collapse" id="tbl-raw-sample">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                <th class="p-2">Mã GD</th>
+                <th class="p-2">Ngày</th>
+                <th class="p-2">Kỳ</th>
+                <th class="p-2">Cửa hàng</th>
+                <th class="p-2">Sản phẩm</th>
+                <th class="p-2 text-right">SL thô</th>
+                <th class="p-2 text-right">Thành tiền</th>
+                <th class="p-2 text-center">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="raw-sample-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: GIAI ĐOẠN 1 -->
+    <section id="tab-phase1" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center">
+              <i class="fa-solid fa-broom mr-2 text-blue-600"></i> Giai đoạn 1: AI Agent Lọc trùng, Loại đơn hủy & Chuẩn hóa
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Hệ thống xử lý song song 61.200 bản ghi thô từ 18 cửa hàng.</p>
+          </div>
+          <button id="btn-run-clean" onclick="executeCleanAgent()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition shadow flex items-center self-start">
+            <i class="fa-solid fa-play mr-2"></i> Chạy AI Agent Làm Sạch Dữ Liệu
+          </button>
+        </div>
+
+        <!-- Metric Audit Log -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6" id="clean-metrics-box">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center">
+            <div class="text-xs text-slate-500 font-medium">Tổng bản ghi thô</div>
+            <div class="text-xl font-bold text-slate-800 mt-1" id="m-total-raw">--</div>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl text-center">
+            <div class="text-xs text-rose-600 font-medium">Đơn trùng lặp loại bỏ</div>
+            <div class="text-xl font-bold text-rose-700 mt-1" id="m-dup-removed">--</div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center">
+            <div class="text-xs text-amber-700 font-medium">Đơn hủy đã bóc tách</div>
+            <div class="text-xl font-bold text-amber-800 mt-1" id="m-canceled-removed">--</div>
+          </div>
+          <div class="bg-orange-50 border border-orange-200 p-4 rounded-xl text-center">
+            <div class="text-xs text-orange-700 font-medium">Doanh thu hủy đã trừ</div>
+            <div class="text-xl font-bold text-orange-800 mt-1" id="m-canceled-val">--</div>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+            <div class="text-xs text-emerald-700 font-medium">Bản ghi SẠCH chuẩn</div>
+            <div class="text-xl font-bold text-emerald-800 mt-1" id="m-clean-total">--</div>
+          </div>
+        </div>
+
+        <!-- Clean Preview Table -->
+        <div class="mt-6">
+          <h3 class="text-sm font-bold text-slate-800 mb-3">Xem trước "Sheets Dữ Liệu Đã Làm Sạch" (Cleaned Sheets)</h3>
+          <div class="overflow-x-auto text-xs border border-slate-200 rounded-lg">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                  <th class="p-2.5">Mã GD</th>
+                  <th class="p-2.5">Cửa hàng</th>
+                  <th class="p-2.5">Sản phẩm</th>
+                  <th class="p-2.5 text-right">SL Sạch</th>
+                  <th class="p-2.5 text-right">Đơn giá</th>
+                  <th class="p-2.5 text-right">Doanh thu thuần</th>
+                  <th class="p-2.5 text-right">Giá vốn</th>
+                  <th class="p-2.5 text-right">Lợi nhuận gộp</th>
+                  <th class="p-2.5 text-center">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100" id="clean-sample-body">
+                <tr><td colspan="9" class="p-4 text-center text-slate-400">Bấm "Chạy AI Agent Làm Sạch Dữ Liệu" ở trên để xem bảng dữ liệu sạch.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Human Verification Gatekeeper -->
+        <div class="mt-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl p-5" id="human-verify-container">
+          <h4 class="text-sm font-bold text-slate-800 flex items-center mb-2">
+            <i class="fa-solid fa-user-shield mr-2 text-indigo-600"></i> Xác Thực Nghiệp Vụ Thủ Công (Human Verification)
+          </h4>
+          <p class="text-xs text-slate-600 mb-4">
+            Theo đúng luồng BPMN: Nhân viên kinh doanh rà soát lại kết quả đối soát. Sau khi bấm phê duyệt, Sheets sạch mới được đáp sang Giai đoạn 2.
+          </p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <label class="flex items-center space-x-2 text-xs font-medium text-slate-700 cursor-pointer">
+              <input type="checkbox" id="chk-human-ok" onchange="toggleVerifyBtn()" class="w-4 h-4 text-blue-600 rounded">
+              <span>Tôi xác nhận: Toàn bộ đơn trùng lặp, đơn hủy và giá vốn đã được đối soát chính xác 100%.</span>
+            </label>
+            <button id="btn-approve-g2" disabled onclick="approveAndProceedToG2()" class="bg-emerald-600 disabled:bg-slate-300 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition shadow">
+              <i class="fa-solid fa-check-circle mr-1"></i> Phê Duyệt & Chuyển Sang Giai Đoạn 2
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: GIAI ĐOẠN 2 -->
+    <section id="tab-phase2" class="hidden space-y-6">
+      <!-- High Level KPIs -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">Doanh thu thuần toàn chuỗi</div>
+          <div class="text-xl font-bold text-slate-900 mt-1" id="kpi-total-rev">--</div>
+          <div class="text-xs text-emerald-600 mt-1 font-semibold" id="kpi-rev-mom">--</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">Tổng Lợi nhuận gộp</div>
+          <div class="text-xl font-bold text-slate-900 mt-1" id="kpi-total-profit">--</div>
+          <div class="text-xs text-slate-400 mt-1">Sau khi trừ giá vốn</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">Tỷ suất Lợi nhuận gộp</div>
+          <div class="text-xl font-bold text-blue-600 mt-1" id="kpi-margin-pct">--</div>
+          <div class="text-xs text-slate-400 mt-1">Gross Margin</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">Mục tiêu Doanh số (Target)</div>
+          <div class="text-xl font-bold text-slate-900 mt-1" id="kpi-target-rev">--</div>
+          <div class="text-xs text-slate-400 mt-1">18 Cửa hàng</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">Mức hoàn thành KPI</div>
+          <div class="text-xl font-bold text-purple-600 mt-1" id="kpi-completion-pct">--</div>
+          <div class="text-xs text-slate-400 mt-1">Toàn hệ thống</div>
+        </div>
+      </div>
+
+      <!-- Management Table -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900 flex items-center">
+            <i class="fa-solid fa-table-list mr-2 text-blue-600"></i> Báo Cáo Quản Trị Chi Tiết 18 Cửa Hàng (Đã Chuẩn Hóa Đối Soát)
+          </h3>
+          <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full font-medium">Kỳ hiện tại: 10/2026 vs Kỳ so sánh: 09/2026</span>
+        </div>
+        <div class="overflow-x-auto text-xs">
+          <table class="w-full text-left border-collapse" id="tbl-report">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                <th class="p-2.5">Mã</th>
+                <th class="p-2.5">Tên Cửa Hàng</th>
+                <th class="p-2.5">Vùng</th>
+                <th class="p-2.5 text-center">Hạng</th>
+                <th class="p-2.5 text-right">Doanh thu (Tr.đ)</th>
+                <th class="p-2.5 text-right">Mục tiêu (Tr.đ)</th>
+                <th class="p-2.5 text-center">% KPI</th>
+                <th class="p-2.5 text-right">Lợi nhuận gộp (Tr.đ)</th>
+                <th class="p-2.5 text-center">Biên LN %</th>
+                <th class="p-2.5 text-center">MoM D.Thu</th>
+                <th class="p-2.5 text-center">MoM L.Nhuận</th>
+                <th class="p-2.5 text-center">Tỷ lệ Trả %</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="report-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Chart Comparison -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 mb-4">Biểu Đồ So Sánh: Doanh Thu Thực Tế vs Mục Tiêu KPI (18 Cửa Hàng)</h3>
+        <div class="h-80 w-full">
+          <canvas id="revTargetChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: GIAI ĐOẠN 3 -->
+    <section id="tab-phase3" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white p-6 rounded-xl shadow">
+        <h2 class="text-lg font-bold flex items-center">
+          <i class="fa-solid fa-bullseye mr-2"></i> Giai đoạn 3: Đối Chiếu Chéo, Phát Hiện Bất Thường & Ra Quyết Định
+        </h2>
+        <p class="text-xs text-rose-100 mt-1 max-w-3xl">
+          Hệ thống AI Agent tự động thực hiện <strong>Cross-check Audit</strong> giữa Sheets Sạch và Báo cáo Quản trị. Tìm ra các nghịch lý (tăng trưởng ảo do xói mòn margin, tỷ lệ hoàn trả quá cao) và xếp hạng ưu tiên thứ tự hỗ trợ giúp Giám đốc Kinh doanh ra quyết định kịp thời.
+        </p>
+      </div>
+
+      <!-- Priority Groups Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="priority-cards-summary">
+        <div class="bg-white p-5 rounded-xl border-t-4 border-rose-600 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-rose-600 uppercase">Ưu Tiên 1 (Khẩn Cấp)</span>
+            <span class="badge-p1 text-xs px-2 py-0.5 rounded-full font-bold" id="cnt-p1">--</span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mt-2" id="txt-p1-stores">--</div>
+          <p class="text-xs text-slate-500 mt-1">Hụt sâu KPI, tỷ lệ trả hàng cao hoặc sụt giảm nặng. Cần can thiệp ngay.</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl border-t-4 border-amber-500 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-600 uppercase">Ưu Tiên 2 (Theo Dõi)</span>
+            <span class="badge-p2 text-xs px-2 py-0.5 rounded-full font-bold" id="cnt-p2">--</span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mt-2" id="txt-p2-stores">--</div>
+          <p class="text-xs text-slate-500 mt-1">Nghịch lý doanh thu tăng nhưng lợi nhuận giảm hoặc sát ngưỡng KPI.</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl border-t-4 border-emerald-500 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-600 uppercase">Ưu Tiên 3 (Vận Hành Tốt)</span>
+            <span class="badge-p3 text-xs px-2 py-0.5 rounded-full font-bold" id="cnt-p3">--</span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mt-2" id="txt-p3-stores">--</div>
+          <p class="text-xs text-slate-500 mt-1">Đạt và vượt chỉ tiêu KPI, tỷ lệ trả hàng thấp, biên lợi nhuận ổn định.</p>
+        </div>
+      </div>
+
+      <!-- Ranked List with Actionable Recommendations -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center">
+          <i class="fa-solid fa-list-ol mr-2 text-rose-600"></i> Bảng Xếp Hạng Chi Tiết & Khuyến Nghị AI Cho Giám Đốc Kinh Doanh
+        </h3>
+        <div class="space-y-4" id="ranking-list-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: CHI TIẾT CỬA HÀNG & CƠ CẤU NGÀNH HÀNG -->
+    <section id="tab-stores" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Phân Tích Cơ Cấu Sản Phẩm & Lợi Nhuận Từng Cửa Hàng</h2>
+          <p class="text-xs text-slate-500">Giúp xem sâu nguyên nhân thành công hoặc thất bại ở cấp độ ngành hàng.</p>
+        </div>
+        <div class="w-full md:w-72">
+          <select id="sel-store-detail" onchange="renderStoreDetail()" class="w-full border border-slate-300 rounded-lg p-2 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none"></select>
+        </div>
+      </div>
+
+      <!-- Store Highlight Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="store-detail-kpis">
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500">Doanh thu thuần</div>
+          <div class="text-lg font-bold text-slate-800 mt-1" id="sd-rev">--</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500">Mục tiêu KPI</div>
+          <div class="text-lg font-bold text-slate-800 mt-1" id="sd-target">--</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500">Lợi nhuận gộp</div>
+          <div class="text-lg font-bold text-slate-800 mt-1" id="sd-profit">--</div>
+        </div>
+        <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <div class="text-xs text-slate-500">Tỷ suất LN gộp</div>
+          <div class="text-lg font-bold text-blue-600 mt-1" id="sd-margin">--</div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown Chart & Table -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Tỷ Trọng Doanh Thu Theo Ngành Hàng</h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="categoryPieChart"></canvas>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Bảng Chi Tiết Ngành Hàng</h3>
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                  <th class="p-2">Ngành hàng</th>
+                  <th class="p-2 text-right">Doanh thu (Tr.đ)</th>
+                  <th class="p-2 text-right">Lợi nhuận (Tr.đ)</th>
+                  <th class="p-2 text-center">Biên LN %</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100" id="store-cat-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    © 2026 Phúc An Retail AI Agent Management System • Triển khai chuẩn BPMN 3 Giai Đoạn • Vercel Static Ready
+  </footer>
+
+  <!-- Embedded Data & Application Logic -->
+  <script src="data.js"></script>
+  <script>
+    // State variables
+    let isCleaned = false;
+    let isHumanApproved = false;
+    let revChartInstance = null;
+    let catChartInstance = null;
+
+    // Format helper
+    function fmtNum(n) {
+      return new Intl.NumberFormat('vi-VN').format(Math.round(n));
+    }
+    function fmtMil(n) {
+      return (n / 1e6).toFixed(1);
+    }
+    function fmtBil(n) {
+      return (n / 1e9).toFixed(2);
+    }
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      ['bpmn', 'phase1', 'phase2', 'phase3', 'stores'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`btn-tab-${t}`).classList.remove('tab-active');
+      });
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      document.getElementById(`btn-tab-${tabId}`).classList.add('tab-active');
+
+      if (tabId === 'phase2' && isHumanApproved) {
+        setTimeout(renderManagementReport, 50);
+      }
+      if (tabId === 'phase3' && isHumanApproved) {
+        setTimeout(renderPhase3Ranking, 50);
+      }
+      if (tabId === 'stores') {
+        setTimeout(renderStoreDetail, 50);
+      }
+    }
+
+    // Init Page
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRawSample();
+      initStoreDropdown();
+    });
+
+    function renderRawSample() {
+      const tbody = document.getElementById('raw-sample-body');
+      tbody.innerHTML = '';
+      PHUC_AN_DATA.raw_sample.forEach(r => {
+        const isCanceled = r.status === 'Đã hủy';
+        const isReturn = r.status === 'Đổi trả';
+        const statusBadge = isCanceled 
+          ? '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[11px] font-semibold">Đã hủy</span>' 
+          : (isReturn ? '<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[11px] font-semibold">Đổi trả</span>' 
+                     : '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[11px] font-semibold">Hoàn thành</span>');
+        
+        const tr = document.createElement('tr');
+        tr.className = isCanceled ? 'bg-rose-50/50' : '';
+        tr.innerHTML = `
+          <td class="p-2 font-mono text-slate-500">${r.trans_id}</td>
+          <td class="p-2">${r.trans_date}</td>
+          <td class="p-2">${r.period}</td>
+          <td class="p-2 font-medium">${r.store_name}</td>
+          <td class="p-2 text-slate-700">${r.product_name}</td>
+          <td class="p-2 text-right font-medium">${r.quantity}</td>
+          <td class="p-2 text-right">${fmtNum(r.line_amount)} đ</td>
+          <td class="p-2 text-center">${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Step 1: Clean Agent Execution
+    function executeCleanAgent() {
+      const audit = PHUC_AN_DATA.audit;
+      document.getElementById('m-total-raw').innerText = fmtNum(audit.total_raw);
+      document.getElementById('m-dup-removed').innerText = fmtNum(audit.total_duplicates_removed);
+      document.getElementById('m-canceled-removed').innerText = fmtNum(audit.total_canceled_removed);
+      document.getElementById('m-canceled-val').innerText = fmtBil(audit.total_canceled_value) + ' Tỷ';
+      document.getElementById('m-clean-total').innerText = fmtNum(audit.total_clean_rows);
+
+      // Render clean preview
+      const tbody = document.getElementById('clean-sample-body');
+      tbody.innerHTML = '';
+      PHUC_AN_DATA.clean_sample.forEach(r => {
+        const isReturn = r.status === 'Đổi trả';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2.5 font-mono text-slate-500">${r.trans_id}</td>
+          <td class="p-2.5 font-medium">${r.store_name}</td>
+          <td class="p-2.5 text-slate-700">${r.product_name}</td>
+          <td class="p-2.5 text-right font-bold ${r.clean_quantity < 0 ? 'text-rose-600' : 'text-slate-800'}">${r.clean_quantity}</td>
+          <td class="p-2.5 text-right">${fmtNum(r.unit_price)} đ</td>
+          <td class="p-2.5 text-right font-bold ${r.net_amount < 0 ? 'text-rose-600' : 'text-slate-900'}">${fmtNum(r.net_amount)} đ</td>
+          <td class="p-2.5 text-right text-slate-500">${fmtNum(r.cost_price)} đ</td>
+          <td class="p-2.5 text-right font-semibold text-emerald-700">${fmtNum(r.gross_profit)} đ</td>
+          <td class="p-2.5 text-center">
+            <span class="${isReturn ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'} px-2 py-0.5 rounded text-[11px] font-semibold">${r.status}</span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      isCleaned = true;
+      document.getElementById('chk-human-ok').disabled = false;
+      document.getElementById('btn-run-clean').innerHTML = '<i class="fa-solid fa-check mr-2"></i> Đã làm sạch thành công';
+      document.getElementById('btn-run-clean').className = 'bg-emerald-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow';
+    }
+
+    function toggleVerifyBtn() {
+      const chk = document.getElementById('chk-human-ok');
+      document.getElementById('btn-approve-g2').disabled = !chk.checked;
+    }
+
+    function approveAndProceedToG2() {
+      isHumanApproved = true;
+      alert("✅ Con người (Human Verification) đã duyệt thành công!\nSheets sạch đã được nạp sang Giai đoạn 2: Lập Báo cáo Quản trị.");
+      switchTab('phase2');
+    }
+
+    // Step 2: Management Report
+    function renderManagementReport() {
+      const rep = PHUC_AN_DATA.report;
+      let totalRev = 0, totalTarget = 0, totalProfit = 0, totalRevPrev = 0;
+
+      rep.forEach(r => {
+        totalRev += r.net_revenue;
+        totalTarget += r.target_revenue;
+        totalProfit += r.gross_profit;
+        totalRevPrev += r.net_revenue_prev;
+      });
+
+      const overallKPI = (totalRev / totalTarget) * 100;
+      const overallMargin = (totalProfit / totalRev) * 100;
+      const overallMoM = ((totalRev - totalRevPrev) / totalRevPrev) * 100;
+
+      document.getElementById('kpi-total-rev').innerText = fmtBil(totalRev) + ' Tỷ đ';
+      document.getElementById('kpi-rev-mom').innerText = (overallMoM > 0 ? '+' : '') + overallMoM.toFixed(1) + '% MoM';
+      document.getElementById('kpi-total-profit').innerText = fmtBil(totalProfit) + ' Tỷ đ';
+      document.getElementById('kpi-margin-pct').innerText = overallMargin.toFixed(1) + '%';
+      document.getElementById('kpi-target-rev').innerText = fmtBil(totalTarget) + ' Tỷ đ';
+      document.getElementById('kpi-completion-pct').innerText = overallKPI.toFixed(1) + '%';
+
+      // Render table
+      const tbody = document.getElementById('report-table-body');
+      tbody.innerHTML = '';
+      rep.forEach(r => {
+        const tr = document.createElement('tr');
+        const kpiColor = r.kpi_completion_pct >= 100 ? 'text-emerald-700 font-bold' : (r.kpi_completion_pct >= 90 ? 'text-blue-600 font-semibold' : 'text-rose-600 font-bold');
+        const revMomColor = r.revenue_growth_mom >= 0 ? 'text-emerald-600' : 'text-rose-600';
+        const returnColor = r.return_rate_revenue >= 8 ? 'bg-rose-100 text-rose-800 font-bold' : 'text-slate-600';
+
+        tr.innerHTML = `
+          <td class="p-2.5 font-bold text-slate-700">${r.store_id}</td>
+          <td class="p-2.5 font-medium text-slate-900">${r.store_name}</td>
+          <td class="p-2.5 text-slate-600">${r.region}</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100">${r.tier}</span></td>
+          <td class="p-2.5 text-right font-bold">${fmtMil(r.net_revenue)}</td>
+          <td class="p-2.5 text-right text-slate-500">${fmtMil(r.target_revenue)}</td>
+          <td class="p-2.5 text-center ${kpiColor}">${r.kpi_completion_pct.toFixed(1)}%</td>
+          <td class="p-2.5 text-right font-semibold text-emerald-800">${fmtMil(r.gross_profit)}</td>
+          <td class="p-2.5 text-center font-medium">${r.gross_margin_pct.toFixed(1)}%</td>
+          <td class="p-2.5 text-center font-semibold ${revMomColor}">${r.revenue_growth_mom > 0 ? '+' : ''}${r.revenue_growth_mom.toFixed(1)}%</td>
+          <td class="p-2.5 text-center font-semibold ${r.profit_growth_mom >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${r.profit_growth_mom > 0 ? '+' : ''}${r.profit_growth_mom.toFixed(1)}%</td>
+          <td class="p-2.5 text-center"><span class="px-1.5 py-0.5 rounded ${returnColor}">${r.return_rate_revenue.toFixed(1)}%</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Render Bar Chart
+      renderBarChart(rep);
+    }
+
+    function renderBarChart(rep) {
+      const ctx = document.getElementById('revTargetChart').getContext('2d');
+      if (revChartInstance) revChartInstance.destroy();
+
+      const labels = rep.map(r => r.store_id);
+      const revData = rep.map(r => r.net_revenue / 1e6);
+      const targetData = rep.map(r => r.target_revenue / 1e6);
+
+      revChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Doanh thu thuần (Tr.đ)', data: revData, backgroundColor: '#3B82F6' },
+            { label: 'Mục tiêu KPI (Tr.đ)', data: targetData, backgroundColor: '#CBD5E1' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Triệu VNĐ' } }
+          }
+        }
+      });
+    }
+
+    // Step 3: Ranking & Recommendations
+    function renderPhase3Ranking() {
+      const ranking = PHUC_AN_DATA.ranking;
+      let p1 = 0, p2 = 0, p3 = 0;
+      let p1Names = [], p2Names = [], p3Names = [];
+
+      ranking.forEach(r => {
+        if (r.priority_level.includes('Ưu tiên 1')) { p1++; p1Names.push(r.store_id); }
+        else if (r.priority_level.includes('Ưu tiên 2')) { p2++; p2Names.push(r.store_id); }
+        else { p3++; p3Names.push(r.store_id); }
+      });
+
+      document.getElementById('cnt-p1').innerText = p1 + ' Cửa hàng';
+      document.getElementById('txt-p1-stores').innerText = p1Names.join(', ');
+      document.getElementById('cnt-p2').innerText = p2 + ' Cửa hàng';
+      document.getElementById('txt-p2-stores').innerText = p2Names.join(', ');
+      document.getElementById('cnt-p3').innerText = p3 + ' Cửa hàng';
+      document.getElementById('txt-p3-stores').innerText = p3Names.length + ' Cửa hàng ổn định';
+
+      const listContainer = document.getElementById('ranking-list-container');
+      listContainer.innerHTML = '';
+
+      ranking.forEach((r, idx) => {
+        const badgeClass = r.priority_level.includes('Ưu tiên 1') ? 'badge-p1' : (r.priority_level.includes('Ưu tiên 2') ? 'badge-p2' : 'badge-p3');
+        
+        let anomalyHtml = '';
+        if (r.anomalies && r.anomalies.length > 0) {
+          anomalyHtml = r.anomalies.map(a => `<li class="text-xs text-rose-700">${a}</li>`).join('');
+        } else {
+          anomalyHtml = '<li class="text-xs text-slate-500 italic">Không phát hiện bất thường nghiêm trọng.</li>';
+        }
+
+        let recHtml = r.recommendations.map(rec => `<li class="text-xs text-slate-800 font-medium">👉 ${rec}</li>`).join('');
+
+        const card = document.createElement('div');
+        card.className = "border border-slate-200 rounded-xl p-4 bg-slate-50/50 hover:bg-white transition";
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
+            <div class="flex items-center space-x-3">
+              <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold">#${idx+1}</span>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">[${r.store_id}] ${r.store_name}</h4>
+                <span class="text-xs text-slate-500">Phân hạng: ${r.tier} | Vùng: ${r.region}</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-slate-600">Điểm khẩn cấp: ${r.priority_score}/100</span>
+              <span class="${badgeClass} text-xs px-2.5 py-1 rounded-md font-bold">${r.priority_level}</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-3 text-xs bg-white p-3 rounded-lg border border-slate-100">
+            <div><span class="text-slate-400">Doanh thu thuần:</span> <strong class="text-slate-800">${fmtMil(r.net_revenue)} Tr</strong></div>
+            <div><span class="text-slate-400">Đạt KPI:</span> <strong class="${r.kpi_completion_pct < 90 ? 'text-rose-600' : 'text-emerald-700'}">${r.kpi_completion_pct}%</strong></div>
+            <div><span class="text-slate-400">Tăng trưởng MoM:</span> <strong>${r.revenue_growth_mom}%</strong></div>
+            <div><span class="text-slate-400">Tỷ lệ đổi trả:</span> <strong class="${r.return_rate_revenue >= 8 ? 'text-rose-600' : 'text-slate-800'}">${r.return_rate_revenue}%</strong></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div class="bg-rose-50/50 border border-rose-100 p-3 rounded-lg">
+              <div class="text-[11px] font-bold text-rose-800 uppercase mb-1">🔍 Phát hiện từ AI Cross-check Audit:</div>
+              <ul class="list-disc ml-4 space-y-1">${anomalyHtml}</ul>
+            </div>
+            <div class="bg-blue-50/50 border border-blue-100 p-3 rounded-lg">
+              <div class="text-[11px] font-bold text-blue-900 uppercase mb-1">🎯 Đề xuất hành động cho Giám đốc KD:</div>
+              <ul class="space-y-1">${recHtml}</ul>
+            </div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+
+    // Step 4: Store Details
+    function initStoreDropdown() {
+      const sel = document.getElementById('sel-store-detail');
+      sel.innerHTML = '';
+      PHUC_AN_DATA.stores.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.store_id;
+        opt.innerText = `${s.store_id} - ${s.store_name}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function renderStoreDetail() {
+      const storeId = document.getElementById('sel-store-detail').value;
+      const storeRep = PHUC_AN_DATA.report.find(r => r.store_id === storeId);
+      if (!storeRep) return;
+
+      document.getElementById('sd-rev').innerText = fmtMil(storeRep.net_revenue) + ' Tr';
+      document.getElementById('sd-target').innerText = fmtMil(storeRep.target_revenue) + ' Tr';
+      document.getElementById('sd-profit').innerText = fmtMil(storeRep.gross_profit) + ' Tr';
+      document.getElementById('sd-margin').innerText = storeRep.gross_margin_pct.toFixed(1) + '%';
+
+      // Category filter
+      const catData = PHUC_AN_DATA.category_summary.filter(c => c.store_id === storeId);
+      const tbody = document.getElementById('store-cat-body');
+      tbody.innerHTML = '';
+
+      const catLabels = [];
+      const catRevs = [];
+
+      catData.forEach(c => {
+        const margin = ((c.cat_profit / c.cat_revenue) * 100).toFixed(1);
+        catLabels.push(c.category);
+        catRevs.push(c.cat_revenue / 1e6);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2 font-medium">${c.category}</td>
+          <td class="p-2 text-right font-bold">${fmtMil(c.cat_revenue)}</td>
+          <td class="p-2 text-right text-emerald-700 font-semibold">${fmtMil(c.cat_profit)}</td>
+          <td class="p-2 text-center font-bold text-blue-600">${margin}%</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Pie chart
+      const ctx = document.getElementById('categoryPieChart').getContext('2d');
+      if (catChartInstance) catChartInstance.destroy();
+
+      catChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: catLabels,
+          datasets: [{
+            data: catRevs,
+            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    function resetData() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
+
